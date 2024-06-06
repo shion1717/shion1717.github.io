@@ -1,7 +1,38 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Input Cleaning Example</title>
+  <script>
+    // Function to clean general input
+    function cleanInput(input) {
+      let cleaned = input.replace(/[^a-zA-Z0-9 ]/g, ''); // Remove special characters
+      return cleaned.trim(); // Remove leading/trailing whitespace
+    }
+
+    // Function to censor NRIC numbers within a long string
+    function censorNRIC(input) {
+      // Regular expression to match Singapore NRIC numbers (e.g., S1234567D or T1234567J)
+      let nricRegex = /[STFG]\d{7}[A-Z]/gi;
+      return input.replace(nricRegex, (match) => {
+        return match[0] + '******' + match.slice(7);
+      });
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      let userInput = document.getElementById('userInput').value;
+      let cleanedInput = cleanInput(userInput);
+      let censoredInput = censorNRIC(cleanedInput);
+      console.log('Censored Input:', censoredInput);
+      // Now send censoredInput to the server via an AJAX request or form submission
+    }
+  </script>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <form onsubmit="handleSubmit(event)">
+    <label for="userInput">Enter something (including NRIC):</label>
+    <input type="text" id="userInput" name="userInput">
+    <button type="submit">Submit</button>
+  </form>
 </body>
 </html>
